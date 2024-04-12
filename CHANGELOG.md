@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.1](https://github.com/TartanLeGrand/laravel-openapi/compare/v1.13.0...v1.13.1) (2024-04-12)
+
+
+### Miscellaneous Chores
+
+* **deps:** update actions/setup-node action to v4 ([#7](https://github.com/TartanLeGrand/laravel-openapi/issues/7)) ([e53fc5e](https://github.com/TartanLeGrand/laravel-openapi/commit/e53fc5e09aadbbc40f63cfa236155e57a23630a6))
+* **deps:** update dependency vuepress to v1.9.10 ([#2](https://github.com/TartanLeGrand/laravel-openapi/issues/2)) ([9d80e06](https://github.com/TartanLeGrand/laravel-openapi/commit/9d80e069c75cb65fe73a5fcd6f994e3c453a15f7))
+
 ## [1.13.0](https://github.com/TartanLeGrand/laravel-openapi/compare/v1.12.0...v1.13.0) (2024-04-12)
 
 

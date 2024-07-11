@@ -48,19 +48,26 @@ class SchemaFactoryMakeCommand extends GeneratorCommand
 
         $columns = SchemaFacade::connection($model->getConnectionName())->getColumnListing(config('database.connections.'.config('database.default').'.prefix', '').$model->getTable());
         $connection = $model->getConnection();
-
+        
+        $tableName = config('database.connections.'.config('database.default').'.prefix', '').$model->getTable();
+        
+        
         $definition = 'return Schema::object(\''.class_basename($model).'\')'.PHP_EOL;
         $definition .= '            ->properties('.PHP_EOL;
 
         $properties = collect($columns)
-            ->map(static function ($column) use ($model, $connection) {
-                /** @var Column $column */
-                $column = $connection->getDoctrineColumn(config('database.connections.'.config('database.default').'.prefix', '').$model->getTable(), $column);
-                $name = $column->getName();
-                $default = $column->getDefault();
-                $notNull = $column->getNotnull();
+            ->map(static function ($columnName) use ($model, $connection, $tableName) {
+//                /** @var Column $column */
+//                $column = $connection->getDoctrineColumn(config('database.connections.'.config('database.default').'.prefix', '').$model->getTable(), $column);
+                $columnType = $connection->getSchemaBuilder()->getColumnType(
+                    $tableName,
+                    $columnName
+                );
+                $name = $columnName;
+                $default = $connection->select("SELECT COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tableName' AND COLUMN_NAME = '$columnName'")[0]->COLUMN_DEFAULT;
+                $notNull = $connection->select("SELECT IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tableName' AND COLUMN_NAME = '$columnName'")[0]->IS_NULLABLE === 'NO';
 
-                switch (get_class($column->getType())) {
+                switch ($columnType) {
                     case IntegerType::class:
                         $format = 'Schema::integer(%s)->default(%s)';
                         $args = [$name, $notNull ? (int) $default : null];

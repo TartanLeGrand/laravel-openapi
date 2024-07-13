@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Schema as SchemaFacade;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputOption;
+use Illuminate\Support\Facades\DB;
+
 
 class SchemaFactoryMakeCommand extends GeneratorCommand
 {
@@ -51,21 +53,32 @@ class SchemaFactoryMakeCommand extends GeneratorCommand
         
         $tableName = config('database.connections.'.config('database.default').'.prefix', '').$model->getTable();
         
+        $schema = $connection->getDoctrineSchemaManager();
         
         $definition = 'return Schema::object(\''.class_basename($model).'\')'.PHP_EOL;
         $definition .= '            ->properties('.PHP_EOL;
 
         $properties = collect($columns)
-            ->map(static function ($columnName) use ($model, $connection, $tableName) {
+            ->map(static function ($columnName) use ($model, $connection, $tableName, $schema) {
 //                /** @var Column $column */
 //                $column = $connection->getDoctrineColumn(config('database.connections.'.config('database.default').'.prefix', '').$model->getTable(), $column);
                 $columnType = $connection->getSchemaBuilder()->getColumnType(
                     $tableName,
                     $columnName
                 );
+
+                // Access the column details
+                $column = $schema->listTableDetails($tableName)->getColumn($columnName);
+
+                // Get the default value of the column
+                $default = $column->getDefault();
+
+                // Check if the column is not nullable
+                $notNull = !$column->getNotnull();
+
                 $name = $columnName;
-                $default = $connection->select("SELECT COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tableName' AND COLUMN_NAME = '$columnName'")[0]->COLUMN_DEFAULT;
-                $notNull = $connection->select("SELECT IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tableName' AND COLUMN_NAME = '$columnName'")[0]->IS_NULLABLE === 'NO';
+                // $default = $connection->select("SELECT COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tableName' AND COLUMN_NAME = '$columnName'")[0]->COLUMN_DEFAULT;
+                // $notNull = $connection->select("SELECT IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tableName' AND COLUMN_NAME = '$columnName'")[0]->IS_NULLABLE === 'NO';
 
                 switch ($columnType) {
                     case IntegerType::class:

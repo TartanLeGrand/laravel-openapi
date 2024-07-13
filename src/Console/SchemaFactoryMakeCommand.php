@@ -62,12 +62,20 @@ class SchemaFactoryMakeCommand extends GeneratorCommand
                 $default = null;
                 $notNull = false;
                 
-                $tmpColumns = $connection->getSchemaBuilder()->getColumns($tableName);
-                foreach ($tmpColumns as $tmpColumn) {
-                    if ($tmpColumn['name'] == $columnName) {
-                        $columnType = $tmpColumn['type'] ?? "";
-                        $default = $tmpColumn['default'] ?? null;
-                        $notNull = ($tmpColumn['nullable'] ?? false) === false;
+                // Use the schema builder to get the columns of the table
+                $tableColumns = $connection->getSchemaBuilder()->getColumns($tableName);
+                
+                // Iterate over each column in the table
+                foreach ($tableColumns as $column) {
+                    // Check if the current column is the one we're interested in
+                    if ($column['name'] == $columnName) {
+                        // If it is, then retrieve its type, default value, and nullability
+                        // If these values are not set, provide a default value
+                        $columnType = $column['type'] ?? "";
+                        $defaultValue = $column['default'] ?? null;
+                        $isNotNull = ($column['nullable'] ?? false) === false;
+                        
+                        // Once we've found our column, we don't need to check the others
                         break;
                     }
                 }

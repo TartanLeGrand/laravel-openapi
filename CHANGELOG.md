@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/TartanLeGrand/laravel-openapi/compare/v2.0.0...v2.0.1) (2024-12-09)
+
+
+### Performance Improvements
+
+* **memoization:** add memoization for build referencable schemas ([#30](https://github.com/TartanLeGrand/laravel-openapi/issues/30)) ([7657892](https://github.com/TartanLeGrand/laravel-openapi/commit/765789290c4b43dedf3f7e4f96ef32cbe82a9087))
+
 ## [2.0.0](https://github.com/TartanLeGrand/laravel-openapi/compare/v1.13.1...v2.0.0) (2024-08-02)
 
 

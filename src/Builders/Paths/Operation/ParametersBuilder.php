@@ -41,10 +41,12 @@ class ParametersBuilder
 
                     $schema = SchemaHelpers::guessFromReflectionType($reflectionParameter->getType());
                 }
-
+                
                 /** @var Param $description */
-                $description = collect($route->actionDocBlock->getTagsByName('param'))
-                    ->first(static fn (Param $param) => Str::snake($param->getVariableName()) === Str::snake($parameter['name']));
+                $description = $route->actionDocBlock
+                    ? collect($route->actionDocBlock->getTagsByName('param'))
+                        ->first(static fn(Param $param) => Str::snake($param->getVariableName()) === Str::snake($parameter['name']))
+                    : null;
 
                 return Parameter::path()->name($parameter['name'])
                     ->required()

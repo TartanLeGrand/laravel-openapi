@@ -78,10 +78,12 @@ class RouteInformation
             $docBlock = $docComment ? DocBlockFactory::createInstance()->create($docComment) : null;
 
             $controllerAttributes = collect($reflectionClass->getAttributes())
-                ->map(fn (ReflectionAttribute $attribute) => $attribute->newInstance());
+                ->filter(fn(ReflectionAttribute $attribute) => class_exists($attribute->getName()))
+                ->map(fn(ReflectionAttribute $attribute) => $attribute->newInstance());
 
             $actionAttributes = collect($reflectionMethod->getAttributes())
-                ->map(fn (ReflectionAttribute $attribute) => $attribute->newInstance());
+                ->filter(fn(ReflectionAttribute $attribute) => class_exists($attribute->getName()))
+                ->map(fn(ReflectionAttribute $attribute) => $attribute->newInstance());
 
             $containsControllerLevelParamter = $actionAttributes->contains(fn ($value) => $value instanceof \Vyuldashev\LaravelOpenApi\Attributes\Parameters);
 

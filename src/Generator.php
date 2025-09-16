@@ -2,6 +2,7 @@
 
 namespace Vyuldashev\LaravelOpenApi;
 
+use GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement;
 use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
 use Illuminate\Support\Arr;
 use Vyuldashev\LaravelOpenApi\Builders\ComponentsBuilder;
@@ -50,13 +51,19 @@ class Generator
         $components = $this->componentsBuilder->build($collection, Arr::get($middlewares, 'components', []));
         $extensions = Arr::get($this->config, 'collections.'.$collection.'.extensions', []);
 
+        $securitySchemeNames = Arr::get($this->config, 'collections.'.$collection.'.security', []);
+        $securitySchemes = Arr::map(
+            $securitySchemeNames,
+            fn(string $name) => SecurityRequirement::create()->securityScheme($name)
+        );
+
         $openApi = OpenApi::create()
             ->openapi(OpenApi::OPENAPI_3_0_2)
             ->info($info)
             ->servers(...$servers)
             ->paths(...$paths)
             ->components($components)
-            ->security(...Arr::get($this->config, 'collections.'.$collection.'.security', []))
+            ->security(...$securitySchemes)
             ->tags(...$tags);
 
         foreach ($extensions as $key => $value) {

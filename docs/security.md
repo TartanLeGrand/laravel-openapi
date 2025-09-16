@@ -13,7 +13,7 @@ After you generate a security scheme, it will be declared in the `securityScheme
 ```php
 
 'security' => [
-  GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement::create()->securityScheme('BearerToken'),
+  'BearerToken',
 ],
 
 ```

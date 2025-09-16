@@ -12,8 +12,11 @@ Route::group(['as' => 'openapi.'], function () {
             continue;
         }
 
-        Route::get($uri, [OpenApiController::class, 'show'])
+        $generator = app(\Vyuldashev\LaravelOpenApi\Generator::class);
+
+        Route::get($uri, fn() => $generator->generate($name)->jsonSerialize())
             ->name($name.'.specification')
             ->middleware(Arr::get($config, 'route.middleware'));
+
     }
 });

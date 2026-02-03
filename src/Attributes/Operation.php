@@ -28,7 +28,7 @@ class Operation
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(string $id = null, array $tags = [], string $security = null, string $method = null, array $servers = null)
+    public function __construct(?string $id = null, array $tags = [], ?string $security = null, ?string $method = null, ?array $servers = null)
     {
         $this->id = $id;
         $this->tags = $tags;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vyuldashev\LaravelOpenApi\Tests\Builders;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Vyuldashev\LaravelOpenApi\Builders\TagsBuilder;
 use Vyuldashev\LaravelOpenApi\Tests\TestCase;
 
@@ -16,6 +17,7 @@ class TagsBuilderTest extends TestCase
      * @param array $expected
      * @return void
      */
+    #[DataProvider('providerBuild')]
     public function testBuild(array $config, array $expected): void
     {
         $builder = new TagsBuilder();
